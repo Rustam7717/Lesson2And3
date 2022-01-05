@@ -1,27 +1,26 @@
 package com.example.lesson2and3.posts;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.lesson2and3.data.models.Post;
 import com.example.lesson2and3.databinding.ItemPostBinding;
 import com.example.lesson2and3.utils.OnItemClickListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHolder> {
-
     private List<Post> posts = new ArrayList<>();
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
-
+    private ItemPostBinding binding;
     private OnItemClickListener onItemClickListener;
 
+    public PostsAdapter() {
+        posts = new ArrayList<>();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     public void setPosts(List<Post> posts) {
         this.posts = posts;
         notifyDataSetChanged();
@@ -30,9 +29,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
     @NonNull
     @Override
     public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemPostBinding binding = ItemPostBinding.inflate(
+        binding = ItemPostBinding.inflate(
                 LayoutInflater.from(parent.getContext()),
-                parent,false);
+                parent, false);
         return new PostsViewHolder(binding);
     }
 
@@ -46,25 +45,37 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
         return posts.size();
     }
 
+    public Post getPost(int position) {
+        return posts.get(position);
+    }
+
+
+    public void deletePost(Post post) {
+        posts.remove(post);
+        notifyDataSetChanged();
+    }
+
     public class PostsViewHolder extends RecyclerView.ViewHolder {
 
         private ItemPostBinding binding;
+
         public PostsViewHolder(@NonNull ItemPostBinding binding) {
             super(binding.getRoot());
-            this.binding=binding;
+            this.binding = binding;
+
+            itemView.setOnClickListener(view -> {
+                onItemClickListener.onClick(getAdapterPosition());
+            });
+            itemView.setOnLongClickListener(view -> {
+                onItemClickListener.onLongClickListener(posts.get(getAdapterPosition()));
+                return true;
+            });
         }
 
         public void onBind(Post post) {
             binding.tvTitle.setText(post.getTitle());
             binding.tvContent.setText(post.getContent());
             binding.tvUserId.setText(String.valueOf(post.getUserId()));
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    onItemClickListener.onLongClickListener(getAdapterPosition());
-                    return false;
-                }
-            });
 
 
         }

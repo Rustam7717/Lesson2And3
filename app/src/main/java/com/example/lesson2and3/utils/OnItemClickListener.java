@@ -1,6 +1,8 @@
 package com.example.lesson2and3.utils;
 
-public interface OnItemClickListener {
+import com.example.lesson2and3.data.models.Post;
 
-    void onLongClickListener(int position);
+public interface OnItemClickListener {
+    void onClick(int position);
+    void onLongClickListener(Post post);
 }
