@@ -3,33 +3,37 @@ package com.example.lesson2and3.posts;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.example.lesson2and3.App;
 import com.example.lesson2and3.R;
 import com.example.lesson2and3.data.models.Post;
 import com.example.lesson2and3.databinding.FragmentPostsBinding;
 import com.example.lesson2and3.form.FormFragment;
 import com.example.lesson2and3.utils.OnItemClickListener;
+
 import java.io.Serializable;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public abstract class PostsFragment extends Fragment implements OnItemClickListener {
+public class PostsFragment extends Fragment implements OnItemClickListener {
 
     private FragmentPostsBinding binding;
     private PostsAdapter adapter;
-    private NavController controller;
 
 
     @Override
@@ -49,7 +53,7 @@ public abstract class PostsFragment extends Fragment implements OnItemClickListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.rvPost.setAdapter(adapter);
-        App.api.getPosts(FormFragment.GROUP_ID).enqueue(new Callback<List<Post>>() {
+        App.api.getPosts().enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -69,19 +73,6 @@ public abstract class PostsFragment extends Fragment implements OnItemClickListe
         });
 
 
-        App.api.getPosts(FormFragment.GROUP_ID).enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    adapter.setPosts(response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-
-            }
-        });
     }
 
 
@@ -99,33 +90,38 @@ public abstract class PostsFragment extends Fragment implements OnItemClickListe
     }
 
     @Override
-    public void onLongClick(int position) {
-            Toast.makeText(requireContext(), "Delete", Toast.LENGTH_SHORT).show();
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-            builder.setMessage("Delete post?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    App.api.deletePost(position).enqueue(new Callback<Post>() {
-                        @Override
-                        public void onResponse(Call<Post> call, Response<Post> response) {
-                            adapter.removeItem(position);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Post> call, Throwable t) {
-
-                        }
-                    });
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
-            builder.show();
-        }
+    public void onLongClickListener(Post post) {
 
     }
+
+    @Override
+    public void onLongClick(int position) {
+        Toast.makeText(requireContext(), "Delete", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setMessage("Delete post?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                App.api.deletePost(position).enqueue(new Callback<Post>() {
+                    @Override
+                    public void onResponse(Call<Post> call, Response<Post> response) {
+                        adapter.removeItem(position);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Post> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        builder.show();
+    }
+
+}

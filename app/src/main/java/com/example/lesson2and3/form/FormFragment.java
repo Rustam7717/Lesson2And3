@@ -79,8 +79,8 @@ public class FormFragment extends Fragment {
                             @Override
                             public void onResponse(Call<Post> call, Response<Post> response) {
                                 Toast.makeText(requireActivity(), "reload", Toast.LENGTH_SHORT).show();
-                                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-                                navController.navigate(R.id.postsFragment);
+                                NavController controller = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                                controller.navigate(R.id.postsFragment);
                             }
 
                             @Override
@@ -90,9 +90,7 @@ public class FormFragment extends Fragment {
                         });
 
                     }
-                    }
-
-
+                }
 
                 @Override
                 public void onFailure(Call<Post> call, Throwable t) {

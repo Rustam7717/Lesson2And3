@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHolder> {
+
+
+
     private List<Post> posts = new ArrayList<>();
     private ItemPostBinding binding;
     private OnItemClickListener onItemClickListener;
@@ -23,6 +26,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
     @SuppressLint("NotifyDataSetChanged")
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+
         notifyDataSetChanged();
     }
 

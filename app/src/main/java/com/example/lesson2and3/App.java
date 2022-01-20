@@ -1,7 +1,7 @@
 package com.example.lesson2and3;
 
 import android.app.Application;
-import com.example.lesson2and3.data.remote.PostApi;
+import com.example.lesson2and3.data.remote.apiservices.PostApi;
 import com.example.lesson2and3.data.remote.RetrofitClient;
 
 public class App extends Application {

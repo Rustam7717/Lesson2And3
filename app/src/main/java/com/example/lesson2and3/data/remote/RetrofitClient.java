@@ -1,7 +1,8 @@
 package com.example.lesson2and3.data.remote;
 
-import java.util.concurrent.TimeUnit;
+import com.example.lesson2and3.data.remote.apiservices.PostApi;
 
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

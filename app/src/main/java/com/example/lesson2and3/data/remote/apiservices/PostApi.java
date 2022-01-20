@@ -1,4 +1,4 @@
-package com.example.lesson2and3.data.remote;
+package com.example.lesson2and3.data.remote.apiservices;
 
 import com.example.lesson2and3.data.models.Post;
 import java.util.List;
@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 public interface PostApi {
 
     @GET("/posts")
-    Call<List<Post>> getPosts(int groupId);
+    Call<List<Post>> getPosts();
 
     @POST("/posts")
     Call<Post> createPost(
