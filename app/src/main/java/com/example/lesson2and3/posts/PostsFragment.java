@@ -1,5 +1,7 @@
 package com.example.lesson2and3.posts;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class PostsFragment extends Fragment implements OnItemClickListener {
+public abstract class PostsFragment extends Fragment implements OnItemClickListener {
 
     private FragmentPostsBinding binding;
     private PostsAdapter adapter;
@@ -97,21 +99,33 @@ public class PostsFragment extends Fragment implements OnItemClickListener {
     }
 
     @Override
-    public void onLongClickListener(Post post) {
-        if (post.getUserId() == FormFragment.USER_ID) {
-            App.api.deletePost(post.getId()).enqueue(new Callback<Post>() {
+    public void onLongClick(int position) {
+            Toast.makeText(requireContext(), "Delete", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+            builder.setMessage("Delete post?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
-                public void onResponse(Call<Post> call, Response<Post> response) {
-                    adapter.deletePost(post);
-                }
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    App.api.deletePost(position).enqueue(new Callback<Post>() {
+                        @Override
+                        public void onResponse(Call<Post> call, Response<Post> response) {
+                            adapter.removeItem(position);
+                        }
 
-                @Override
-                public void onFailure(Call<Post> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<Post> call, Throwable t) {
 
+                        }
+                    });
                 }
             });
-        } else {
-            Toast.makeText(requireActivity(), "Couldn't delete post", Toast.LENGTH_SHORT).show();
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            builder.show();
         }
+
     }
-}

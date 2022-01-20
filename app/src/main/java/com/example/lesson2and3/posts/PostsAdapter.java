@@ -44,13 +44,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
     public int getItemCount() {
         return posts.size();
     }
+    public void removeItem(int position) {
+        posts.remove(position);
+        notifyItemRemoved(position);
+    }
 
     public Post getPost(int position) {
         return posts.get(position);
     }
 
 
-    public void deletePost(Post post) {
+    public void removePost(Post post) {
         posts.remove(post);
         notifyDataSetChanged();
     }
@@ -58,7 +62,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHol
     public class PostsViewHolder extends RecyclerView.ViewHolder {
 
         private ItemPostBinding binding;
-
         public PostsViewHolder(@NonNull ItemPostBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

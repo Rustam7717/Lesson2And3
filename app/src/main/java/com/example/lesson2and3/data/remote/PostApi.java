@@ -20,13 +20,11 @@ public interface PostApi {
             @Body Post post);
 
 
-    @PUT("posts/{id}")
-    Call<Post> updatePost(@Path("id") int id, @Body Post post);
-
-
-    @DELETE("posts/{id}")
+    @DELETE("/posts/{id}")
     Call<Post> deletePost(@Path("id") int id);
 
+    @PUT("/posts/{id}")
+    Call<Post> update(@Path("id") int id, @Body Post post);
 
 
 
