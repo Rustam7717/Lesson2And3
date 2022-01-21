@@ -1,90 +1,82 @@
 package com.example.lesson2and3.posts;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.lesson2and3.data.models.Post;
 import com.example.lesson2and3.databinding.ItemPostBinding;
-import com.example.lesson2and3.utils.OnItemClickListener;
+import com.example.lesson2and3.utils.OnItemClick;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostsViewHolder> {
+public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
+    private List<Post> list = new ArrayList<>();
+    private OnItemClick itemClick;
 
-
-    private List<Post> posts = new ArrayList<>();
-    private ItemPostBinding binding;
-    private OnItemClickListener onItemClickListener;
-
-    public PostsAdapter() {
-        posts = new ArrayList<>();
+    public void setItemClick(OnItemClick itemClick) {
+        this.itemClick = itemClick;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
+    public void remove(int position) {
+        list.remove(list.get(position));
+        notifyDataSetChanged();
+    }
 
+    public void setList(List<Post> list) {
+        this.list = list;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding = ItemPostBinding.inflate(
-                LayoutInflater.from(parent.getContext()),
-                parent, false);
-        return new PostsViewHolder(binding);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemPostBinding binding = ItemPostBinding.inflate(LayoutInflater.from(
+                parent.getContext()
+        ), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostsViewHolder holder, int position) {
-        holder.onBind(posts.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.onBind(list.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return posts.size();
-    }
-    public void removeItem(int position) {
-        posts.remove(position);
-        notifyItemRemoved(position);
+        return list.size();
     }
 
-    public Post getPost(int position) {
-        return posts.get(position);
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
+        private final ItemPostBinding binding;
 
-    public void removePost(Post post) {
-        posts.remove(post);
-        notifyDataSetChanged();
-    }
-
-    public class PostsViewHolder extends RecyclerView.ViewHolder {
-
-        private ItemPostBinding binding;
-        public PostsViewHolder(@NonNull ItemPostBinding binding) {
+        public ViewHolder(@NonNull ItemPostBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-
-            itemView.setOnClickListener(view -> {
-                onItemClickListener.onClick(getAdapterPosition());
-            });
-            itemView.setOnLongClickListener(view -> {
-                onItemClickListener.onLongClickListener(posts.get(getAdapterPosition()));
-                return true;
-            });
         }
 
-        public void onBind(Post post) {
-            binding.tvTitle.setText(post.getTitle());
-            binding.tvContent.setText(post.getContent());
-            binding.tvUserId.setText(String.valueOf(post.getUserId()));
-
-
+        public void onBind(Post postModel) {
+            binding.tvTitle.setText(postModel.getTitle());
+            binding.tvContent.setText(postModel.getContent());
+            binding.tvUserId.setText(String.valueOf(postModel.getUserId()));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemClick.onItemClickListener(getAdapterPosition());
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    itemClick.onLongClickListener(getAdapterPosition());
+                    return false;
+                }
+            });
         }
     }
 }
+
+
